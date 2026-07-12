@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="app_title">Чатик</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <h2 id="authTitle" data-i18n="login_title">Вход</h2>
+      <div class="error-text" id="authError"></div>
+      <input type="text" id="authUsername" data-i18n-placeholder="username" placeholder="Логин" autocomplete="username">
+      <input type="password" id="authPassword" data-i18n-placeholder="password" placeholder="Пароль" autocomplete="current-password">
+      <button id="authSubmitBtn" data-i18n="login_button">Войти</button>
+      <div class="switch-link" id="authSwitchLink" data-i18n="no_account">Нет аккаунта? Зарегистрироваться</div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="mainLayout" class="main-layout hidden">
+    <div class="sidebar">
+      <div class="sidebar-header" data-i18n="app_title">Чатик</div>
+      <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="friends" data-i18n="tab_friends">Друзья</div>
+        <div class="nav-tab" data-tab="groups" data-i18n="tab_groups">Группы</div>
+        <div class="nav-tab" data-tab="profile" data-i18n="tab_profile">Профиль</div>
+      </div>
+      <div class="user-panel">
+        <img class="avatar-small" id="myAvatarSmall" src="">
+        <div class="name" id="myNameSmall">...</div>
+        <button class="icon-btn" id="quickMuteBtn" title="mute">🎤</button>
+        <button class="icon-btn" id="quickDeafenBtn" title="deafen">🔊</button>
+        <button class="icon-btn" id="logoutBtn" title="logout">⏻</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- FRIENDS TAB -->
+      <div id="tabFriends" class="tab-content">
+        <h2 data-i18n="friends_title">Мои друзья</h2>
+        <div class="row-input">
+          <input type="text" id="addFriendInput" data-i18n-placeholder="add_friend_placeholder" placeholder="Введите логин пользователя">
+          <button id="addFriendBtn" data-i18n="send_request">Добавить в друзья</button>
+        </div>
+
+        <div class="section-title" data-i18n="incoming_requests">Входящие заявки</div>
+        <div id="requestsList"></div>
+
+        <div class="section-title" data-i18n="friends_title">Мои друзья</div>
+        <div id="friendsList"></div>
+        <div style="margin-top:12px; font-size:12px; color: var(--text-muted);" data-i18n="right_click_hint">
+          ПКМ по другу во время звонка — регулировка громкости
+        </div>
+      </div>
+
+      <!-- GROUPS TAB -->
+      <div id="tabGroups" class="tab-content hidden">
+        <h2 data-i18n="groups_title">Мои группы</h2>
+        <div class="row-input">
+          <input type="text" id="createGroupInput" data-i18n-placeholder="group_name_placeholder" placeholder="Название группы">
+          <button id="createGroupBtn" data-i18n="create_group">Создать группу</button>
+        </div>
+        <div id="groupsList"></div>
+
+        <div id="groupDetail" class="hidden">
+          <div class="section-title" data-i18n="group_members">Участники</div>
+          <div id="groupMembersList"></div>
+          <div class="row-input">
+            <input type="text" id="addMemberInput" data-i18n-placeholder="add_member_placeholder" placeholder="Логин пользователя">
+            <button id="addMemberBtn" data-i18n="add_member">Добавить в группу</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE TAB -->
+      <div id="tabProfile" class="tab-content hidden">
+        <h2 data-i18n="profile_title">Профиль</h2>
+        <div class="profile-avatar-block">
+          <img id="profileAvatarPreview" src="">
+          <div>
+            <input type="file" id="avatarFileInput" accept="image/*" class="hidden">
+            <button id="chooseAvatarBtn" data-i18n="choose_avatar">Выбрать фото</button>
+          </div>
+        </div>
+
+        <div class="section-title" data-i18n="nickname_label">Никнейм</div>
+        <div class="row-input">
+          <input type="text" id="nicknameInput">
+          <button id="saveNicknameBtn" data-i18n="save">Сохранить</button>
+        </div>
+
+        <div class="section-title" data-i18n="language_label">Язык интерфейса</div>
+        <div class="row-input">
+          <select id="languageSelect">
+            <option value="ru">Русский</option>
+            <option value="be">Беларуская</option>
+            <option value="pl">Polski</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALL PANEL -->
+  <div id="callPanel" class="call-panel hidden">
+    <h3><span data-i18n="call_with">Звонок с</span> <span id="callWithName"></span></h3>
+    <div class="status" id="callStatus" data-i18n="connecting">Соединение...</div>
+    <div class="call-controls">
+      <button id="callMuteBtn" title="mute">🎤</button>
+      <button id="callDeafenBtn" title="deafen">🔊</button>
+      <button id="callEndBtn" class="end-call" title="end_call">✖</button>
+    </div>
+  </div>
+
+  <!-- CONTEXT MENU (volume) -->
+  <div id="volumeContextMenu" class="context-menu hidden">
+    <div class="title"><span data-i18n="volume_for">Громкость</span>: <span id="volumeMenuName"></span></div>
+    <input type="range" id="volumeSlider" min="0" max="200" value="100">
+  </div>
+
+</div>
+
+<script src="/js/i18n.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/voice.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

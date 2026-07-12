@@ -1,0 +1,6 @@
+#FileLock
+#Sun Jul 12 02:51:22 CEST 2026
+hostName=192.168.0.178
+id=19f53ceb0135d96bde9bb5820456bd843dcb84c46f8
+method=file
+server=192.168.0.178\:51406
