@@ -6,6 +6,7 @@ import com.example.discordclone.model.User;
 import com.example.discordclone.repository.FriendshipRepository;
 import com.example.discordclone.repository.UserRepository;
 import com.example.discordclone.security.CurrentUserHolder;
+import com.example.discordclone.websocket.RealtimeHub;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,17 +20,27 @@ public class FriendController {
 
     private final FriendshipRepository friendshipRepository;
     private final UserRepository userRepository;
+    private final RealtimeHub hub;
 
-    public FriendController(FriendshipRepository friendshipRepository, UserRepository userRepository) {
+    public FriendController(FriendshipRepository friendshipRepository, UserRepository userRepository, RealtimeHub hub) {
         this.friendshipRepository = friendshipRepository;
         this.userRepository = userRepository;
+        this.hub = hub;
     }
 
     private Long me() {
         return CurrentUserHolder.get();
     }
 
-    // Отправить заявку в друзья по username
+    private Map<String, Object> userDto(User u) {
+        return Map.of(
+                "id", u.getId(),
+                "username", u.getUsername(),
+                "nickname", u.getNickname() == null ? u.getUsername() : u.getNickname(),
+                "avatarUrl", u.getAvatarUrl() == null ? "" : u.getAvatarUrl()
+        );
+    }
+
     @PostMapping("/request/{username}")
     public ResponseEntity<?> sendRequest(@PathVariable String username) {
         Long myId = me();
@@ -50,10 +61,21 @@ public class FriendController {
         f.setReceiverId(target.getId());
         f.setStatus(FriendStatus.PENDING);
         friendshipRepository.save(f);
+
+        User requesterUser = userRepository.findById(myId).orElse(null);
+        if (requesterUser != null) {
+            hub.sendTo(target.getId(), "friend_request", Map.of(
+                    "requestId", f.getId(),
+                    "userId", requesterUser.getId(),
+                    "username", requesterUser.getUsername(),
+                    "nickname", requesterUser.getNickname() == null ? requesterUser.getUsername() : requesterUser.getNickname(),
+                    "avatarUrl", requesterUser.getAvatarUrl() == null ? "" : requesterUser.getAvatarUrl()
+            ));
+        }
+
         return ResponseEntity.ok(Map.of("status", "sent"));
     }
 
-    // Входящие заявки
     @GetMapping("/requests")
     public List<Map<String, Object>> incomingRequests() {
         Long myId = me();
@@ -80,6 +102,12 @@ public class FriendController {
         Friendship f = fOpt.get();
         f.setStatus(FriendStatus.ACCEPTED);
         friendshipRepository.save(f);
+
+        User accepter = userRepository.findById(myId).orElse(null);
+        if (accepter != null) {
+            hub.sendTo(f.getRequesterId(), "friend_accepted", Map.of("friend", userDto(accepter)));
+        }
+
         return ResponseEntity.ok(Map.of("status", "accepted"));
     }
 
@@ -94,7 +122,6 @@ public class FriendController {
         return ResponseEntity.ok(Map.of("status", "declined"));
     }
 
-    // Список друзей
     @GetMapping
     public List<Map<String, Object>> friends() {
         Long myId = me();
@@ -108,7 +135,8 @@ public class FriendController {
                     "id", u == null ? -1 : u.getId(),
                     "username", u == null ? "?" : u.getUsername(),
                     "nickname", u == null ? "?" : (u.getNickname() == null ? u.getUsername() : u.getNickname()),
-                    "avatarUrl", u == null || u.getAvatarUrl() == null ? "" : u.getAvatarUrl()
+                    "avatarUrl", u == null || u.getAvatarUrl() == null ? "" : u.getAvatarUrl(),
+                    "online", u != null && hub.isOnline(u.getId())
             );
         }).toList();
     }

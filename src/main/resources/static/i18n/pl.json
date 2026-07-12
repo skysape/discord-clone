@@ -44,5 +44,14 @@
   "right_click_hint": "PPM na znajomym podczas rozmowy — regulacja głośności",
   "connecting": "Łączenie...",
   "in_call": "W rozmowie",
-  "close": "Zamknij"
+  "close": "Zamknij",
+  "group_call": "📞 Rozmowa grupowa",
+  "open_chat": "💬 Czat",
+  "add_members": "➕ Dodaj członków",
+  "add_selected": "Dodaj zaznaczonych",
+  "no_addable_friends": "Wszyscy znajomi są już w tej grupie",
+  "type_message": "Napisz wiadomość...",
+  "no_messages": "Brak wiadomości",
+  "online": "online",
+  "incoming_call": "Połączenie przychodzące"
 }

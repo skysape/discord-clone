@@ -44,5 +44,14 @@
   "right_click_hint": "Right-click a friend during a call to adjust their volume",
   "connecting": "Connecting...",
   "in_call": "In call",
-  "close": "Close"
+  "close": "Close",
+  "group_call": "📞 Group call",
+  "open_chat": "💬 Chat",
+  "add_members": "➕ Add members",
+  "add_selected": "Add selected",
+  "no_addable_friends": "All your friends are already in this group",
+  "type_message": "Type a message...",
+  "no_messages": "No messages yet",
+  "online": "online",
+  "incoming_call": "Incoming call"
 }

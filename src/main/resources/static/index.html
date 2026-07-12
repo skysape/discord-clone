@@ -68,12 +68,16 @@
         <div id="groupsList"></div>
 
         <div id="groupDetail" class="hidden">
+          <div class="group-detail-header">
+            <div class="section-title" id="groupDetailName" style="margin:0"></div>
+            <div>
+              <button id="groupCallBtn" data-i18n="group_call">📞 Групповой звонок</button>
+              <button id="groupChatBtn" data-i18n="open_chat">💬 Чат</button>
+            </div>
+          </div>
           <div class="section-title" data-i18n="group_members">Участники</div>
           <div id="groupMembersList"></div>
-          <div class="row-input">
-            <input type="text" id="addMemberInput" data-i18n-placeholder="add_member_placeholder" placeholder="Логин пользователя">
-            <button id="addMemberBtn" data-i18n="add_member">Добавить в группу</button>
-          </div>
+          <button id="openAddMembersBtn" data-i18n="add_members">➕ Добавить участников</button>
         </div>
       </div>
 
@@ -107,18 +111,56 @@
     </div>
   </div>
 
-  <!-- CALL PANEL -->
-  <div id="callPanel" class="call-panel hidden">
-    <h3><span data-i18n="call_with">Звонок с</span> <span id="callWithName"></span></h3>
-    <div class="status" id="callStatus" data-i18n="connecting">Соединение...</div>
-    <div class="call-controls">
-      <button id="callMuteBtn" title="mute">🎤</button>
-      <button id="callDeafenBtn" title="deafen">🔊</button>
-      <button id="callEndBtn" class="end-call" title="end_call">✖</button>
+  <!-- ============ ПОЛНОЭКРАННЫЙ ЗВОНОК ============ -->
+  <div id="callOverlay" class="call-overlay hidden">
+    <div class="call-overlay-content">
+      <div id="callOverlayAvatars" class="call-avatars"></div>
+      <div id="callOverlayTitle" class="call-title"></div>
+      <div id="callOverlayStatus" class="call-status"></div>
+
+      <!-- входящий звонок -->
+      <div id="callIncomingButtons" class="call-big-buttons hidden">
+        <button id="callDeclineBtn" class="call-big-btn call-big-decline" title="decline">✖</button>
+        <button id="callAcceptBtn" class="call-big-btn call-big-accept" title="accept">✔</button>
+      </div>
+
+      <!-- активный звонок -->
+      <div id="callActiveButtons" class="call-controls-big hidden">
+        <button id="callMuteBtn" title="mute">🎤</button>
+        <button id="callDeafenBtn" title="deafen">🔊</button>
+        <button id="callEndBtn" class="end-call" title="end_call">✖</button>
+      </div>
     </div>
   </div>
 
-  <!-- CONTEXT MENU (volume) -->
+  <!-- ============ ЧАТ (личный / групповой) ============ -->
+  <div id="chatModal" class="modal-overlay hidden">
+    <div class="modal-box chat-box">
+      <div class="modal-header">
+        <span id="chatTitle"></span>
+        <button class="modal-close-btn" id="chatCloseBtn">✕</button>
+      </div>
+      <div id="chatMessages" class="chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" data-i18n-placeholder="type_message" placeholder="Написать сообщение...">
+        <button id="chatSendBtn" data-i18n="send">Отправить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ВЫБОР ДРУЗЕЙ ДЛЯ ДОБАВЛЕНИЯ В ГРУППУ ============ -->
+  <div id="addMembersModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span data-i18n="add_members">Добавить участников</span>
+        <button class="modal-close-btn" id="addMembersCloseBtn">✕</button>
+      </div>
+      <div id="addMembersList"></div>
+      <button id="addMembersConfirmBtn" data-i18n="add_selected">Добавить выбранных</button>
+    </div>
+  </div>
+
+  <!-- ============ CONTEXT MENU (громкость) ============ -->
   <div id="volumeContextMenu" class="context-menu hidden">
     <div class="title"><span data-i18n="volume_for">Громкость</span>: <span id="volumeMenuName"></span></div>
     <input type="range" id="volumeSlider" min="0" max="200" value="100">

@@ -28,8 +28,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AuthRequest req) {
-        if (req.username() == null || req.username().isBlank() || req.password() == null || req.password().length() < 4) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Некорректный логин или пароль (мин. 4 символа)"));
+        if (req.username() == null || req.username().isBlank() || req.password() == null || req.password().isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Введите логин и пароль"));
         }
         if (userRepository.existsByUsername(req.username())) {
             return ResponseEntity.badRequest().body(Map.of("error", "Такой пользователь уже существует"));
